@@ -11,11 +11,11 @@ struct Fragment {
         dataLeaf @1 :Data;
         dataNode @2 :UInt64;
         trieNode @3 :Data;
-        wbtreeNode @4 :WBTreeNode;
+        wbbtreeNode @4 :WBBTreeNode;
     }
 }
 
-struct WBTreeNode {
+struct WBBTreeNode {
     key @0 :Data;
     countLeft @1 :UInt64;
     countRight @2 :UInt64;

@@ -14,14 +14,14 @@ type Fragment_specific Fragment
 type Fragment_specific_Which uint16
 
 const (
-	Fragment_specific_Which_dataLeaf   Fragment_specific_Which = 0
-	Fragment_specific_Which_dataNode   Fragment_specific_Which = 1
-	Fragment_specific_Which_trieNode   Fragment_specific_Which = 2
-	Fragment_specific_Which_wbtreeNode Fragment_specific_Which = 3
+	Fragment_specific_Which_dataLeaf    Fragment_specific_Which = 0
+	Fragment_specific_Which_dataNode    Fragment_specific_Which = 1
+	Fragment_specific_Which_trieNode    Fragment_specific_Which = 2
+	Fragment_specific_Which_wbbtreeNode Fragment_specific_Which = 3
 )
 
 func (w Fragment_specific_Which) String() string {
-	const s = "dataLeafdataNodetrieNodewbtreeNode"
+	const s = "dataLeafdataNodetrieNodewbbtreeNode"
 	switch w {
 	case Fragment_specific_Which_dataLeaf:
 		return s[0:8]
@@ -29,8 +29,8 @@ func (w Fragment_specific_Which) String() string {
 		return s[8:16]
 	case Fragment_specific_Which_trieNode:
 		return s[16:24]
-	case Fragment_specific_Which_wbtreeNode:
-		return s[24:34]
+	case Fragment_specific_Which_wbbtreeNode:
+		return s[24:35]
 
 	}
 	return "Fragment_specific_Which(" + strconv.FormatUint(uint64(w), 10) + ")"
@@ -143,15 +143,15 @@ func (s Fragment_specific) SetTrieNode(v []byte) error {
 	return s.Struct.SetData(1, v)
 }
 
-func (s Fragment_specific) WbtreeNode() (WBTreeNode, error) {
+func (s Fragment_specific) WbbtreeNode() (WBBTreeNode, error) {
 	if s.Struct.Uint16(0) != 3 {
-		panic("Which() != wbtreeNode")
+		panic("Which() != wbbtreeNode")
 	}
 	p, err := s.Struct.Ptr(1)
-	return WBTreeNode{Struct: p.Struct()}, err
+	return WBBTreeNode{Struct: p.Struct()}, err
 }
 
-func (s Fragment_specific) HasWbtreeNode() bool {
+func (s Fragment_specific) HasWbbtreeNode() bool {
 	if s.Struct.Uint16(0) != 3 {
 		return false
 	}
@@ -159,18 +159,18 @@ func (s Fragment_specific) HasWbtreeNode() bool {
 	return p.IsValid() || err != nil
 }
 
-func (s Fragment_specific) SetWbtreeNode(v WBTreeNode) error {
+func (s Fragment_specific) SetWbbtreeNode(v WBBTreeNode) error {
 	s.Struct.SetUint16(0, 3)
 	return s.Struct.SetPtr(1, v.Struct.ToPtr())
 }
 
-// NewWbtreeNode sets the wbtreeNode field to a newly
-// allocated WBTreeNode struct, preferring placement in s's segment.
-func (s Fragment_specific) NewWbtreeNode() (WBTreeNode, error) {
+// NewWbbtreeNode sets the wbbtreeNode field to a newly
+// allocated WBBTreeNode struct, preferring placement in s's segment.
+func (s Fragment_specific) NewWbbtreeNode() (WBBTreeNode, error) {
 	s.Struct.SetUint16(0, 3)
-	ss, err := NewWBTreeNode(s.Struct.Segment())
+	ss, err := NewWBBTreeNode(s.Struct.Segment())
 	if err != nil {
-		return WBTreeNode{}, err
+		return WBBTreeNode{}, err
 	}
 	err = s.Struct.SetPtr(1, ss.Struct.ToPtr())
 	return ss, err
@@ -214,122 +214,123 @@ func (p Fragment_specific_Promise) Struct() (Fragment_specific, error) {
 	return Fragment_specific{s}, err
 }
 
-func (p Fragment_specific_Promise) WbtreeNode() WBTreeNode_Promise {
-	return WBTreeNode_Promise{Pipeline: p.Pipeline.GetPipeline(1)}
+func (p Fragment_specific_Promise) WbbtreeNode() WBBTreeNode_Promise {
+	return WBBTreeNode_Promise{Pipeline: p.Pipeline.GetPipeline(1)}
 }
 
-type WBTreeNode struct{ capnp.Struct }
+type WBBTreeNode struct{ capnp.Struct }
 
-// WBTreeNode_TypeID is the unique identifier for the type WBTreeNode.
-const WBTreeNode_TypeID = 0xd5e6cfcfcdeafc8e
+// WBBTreeNode_TypeID is the unique identifier for the type WBBTreeNode.
+const WBBTreeNode_TypeID = 0xa0cc97fbf4bdf8b1
 
-func NewWBTreeNode(s *capnp.Segment) (WBTreeNode, error) {
+func NewWBBTreeNode(s *capnp.Segment) (WBBTreeNode, error) {
 	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 16, PointerCount: 1})
-	return WBTreeNode{st}, err
+	return WBBTreeNode{st}, err
 }
 
-func NewRootWBTreeNode(s *capnp.Segment) (WBTreeNode, error) {
+func NewRootWBBTreeNode(s *capnp.Segment) (WBBTreeNode, error) {
 	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 16, PointerCount: 1})
-	return WBTreeNode{st}, err
+	return WBBTreeNode{st}, err
 }
 
-func ReadRootWBTreeNode(msg *capnp.Message) (WBTreeNode, error) {
+func ReadRootWBBTreeNode(msg *capnp.Message) (WBBTreeNode, error) {
 	root, err := msg.RootPtr()
-	return WBTreeNode{root.Struct()}, err
+	return WBBTreeNode{root.Struct()}, err
 }
 
-func (s WBTreeNode) String() string {
-	str, _ := text.Marshal(0xd5e6cfcfcdeafc8e, s.Struct)
+func (s WBBTreeNode) String() string {
+	str, _ := text.Marshal(0xa0cc97fbf4bdf8b1, s.Struct)
 	return str
 }
 
-func (s WBTreeNode) Key() ([]byte, error) {
+func (s WBBTreeNode) Key() ([]byte, error) {
 	p, err := s.Struct.Ptr(0)
 	return []byte(p.Data()), err
 }
 
-func (s WBTreeNode) HasKey() bool {
+func (s WBBTreeNode) HasKey() bool {
 	p, err := s.Struct.Ptr(0)
 	return p.IsValid() || err != nil
 }
 
-func (s WBTreeNode) SetKey(v []byte) error {
+func (s WBBTreeNode) SetKey(v []byte) error {
 	return s.Struct.SetData(0, v)
 }
 
-func (s WBTreeNode) CountLeft() uint64 {
+func (s WBBTreeNode) CountLeft() uint64 {
 	return s.Struct.Uint64(0)
 }
 
-func (s WBTreeNode) SetCountLeft(v uint64) {
+func (s WBBTreeNode) SetCountLeft(v uint64) {
 	s.Struct.SetUint64(0, v)
 }
 
-func (s WBTreeNode) CountRight() uint64 {
+func (s WBBTreeNode) CountRight() uint64 {
 	return s.Struct.Uint64(8)
 }
 
-func (s WBTreeNode) SetCountRight(v uint64) {
+func (s WBBTreeNode) SetCountRight(v uint64) {
 	s.Struct.SetUint64(8, v)
 }
 
-// WBTreeNode_List is a list of WBTreeNode.
-type WBTreeNode_List struct{ capnp.List }
+// WBBTreeNode_List is a list of WBBTreeNode.
+type WBBTreeNode_List struct{ capnp.List }
 
-// NewWBTreeNode creates a new list of WBTreeNode.
-func NewWBTreeNode_List(s *capnp.Segment, sz int32) (WBTreeNode_List, error) {
+// NewWBBTreeNode creates a new list of WBBTreeNode.
+func NewWBBTreeNode_List(s *capnp.Segment, sz int32) (WBBTreeNode_List, error) {
 	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 16, PointerCount: 1}, sz)
-	return WBTreeNode_List{l}, err
+	return WBBTreeNode_List{l}, err
 }
 
-func (s WBTreeNode_List) At(i int) WBTreeNode { return WBTreeNode{s.List.Struct(i)} }
+func (s WBBTreeNode_List) At(i int) WBBTreeNode { return WBBTreeNode{s.List.Struct(i)} }
 
-func (s WBTreeNode_List) Set(i int, v WBTreeNode) error { return s.List.SetStruct(i, v.Struct) }
+func (s WBBTreeNode_List) Set(i int, v WBBTreeNode) error { return s.List.SetStruct(i, v.Struct) }
 
-func (s WBTreeNode_List) String() string {
-	str, _ := text.MarshalList(0xd5e6cfcfcdeafc8e, s.List)
+func (s WBBTreeNode_List) String() string {
+	str, _ := text.MarshalList(0xa0cc97fbf4bdf8b1, s.List)
 	return str
 }
 
-// WBTreeNode_Promise is a wrapper for a WBTreeNode promised by a client call.
-type WBTreeNode_Promise struct{ *capnp.Pipeline }
+// WBBTreeNode_Promise is a wrapper for a WBBTreeNode promised by a client call.
+type WBBTreeNode_Promise struct{ *capnp.Pipeline }
 
-func (p WBTreeNode_Promise) Struct() (WBTreeNode, error) {
+func (p WBBTreeNode_Promise) Struct() (WBBTreeNode, error) {
 	s, err := p.Pipeline.Struct()
-	return WBTreeNode{s}, err
+	return WBBTreeNode{s}, err
 }
 
-const schema_c50de5992c3b327a = "x\xda\\\x92\xb1k\x13a\x18\xc6\x9f\xe7\xfd.\xc6H" +
-	"SsD\xc1\xa1Y\x04AA\x0b\xea\xa4.UT\xb4" +
-	"\x84\x92\xb7T\x04q\xf0\xbc\xfb\xd2\x1c\xd6K\x8c'\xb1" +
-	"\"N\x0eNn\x0en\x0e\xee\xe2\xd0\xc1Up\x94B" +
-	"A\xf0\x1fP\xa1\x83 \xae\xd5O\xbe3\xc9A\xb6\xf7" +
-	"~<\x1c\xbf\xe7\xb9k\xfc\\\x92\xd3\x95\xbe\x00\xbaP" +
-	"\xd9\xe7F\xf5\x17\xbfw\xb6\xe6^A\x8fP\xdc\x9b\xdd" +
-	"\xb7\xe7~e\xcf\xbe\xe2\x86T\x19\x00g[<@\xb0" +
-	"y\x8c?@\xf7ro\xf7\xf3\xf6\xf6\xf7/\xd0\x83\x14" +
-	"\xf7\xe4\xcc\x85\x93\xaf\xbf\xd5?\xa1\xc2*\xd0\xac\xc9N" +
-	"\xf3\xb0\xf8+\x94w`\xf9\xaa\x99p\x11y/\x1f\x9b" +
-	"\x1f\x8akKF8\xe5\xba\xc3h\xfd\xbe\xcdr\xb3\x18" +
-	"G\x83lp\xfe\xea\xf8y\xf1\xe1\xc0\xc6i7\x8d\x01" +
-	"m\x98`\xc19\x1e\"\x810Z\x06\xf4\x8e\xa1n\x08" +
-	"[\xfc\xeb\xb1\x00a\xeaq\xcfPsaK\xfexl" +
-	"\x80\xf0\x81\xc7\x03C}*l\x99=\x8f\x03 \xdc\xbc" +
-	"\x05\xe8cC}.tI\x94Gm\x1bu\x01\xb0\x0e" +
-	"a\x1d\xff\xd9J?\xb1\x9e\xd5 \xac\x81.\x1f\xa6v" +
-	"\xc2&\xb9\xd1\xdd|h\xedJ\x1f&\xb1l\x94;\x81" +
-	"l\x80\xd3v2nw\xf3\xd2Z\x11Oh;\xa4\xce" +
-	"\x99\x00\x08|\xab+G\x01]2\xd4\xb6\x90\xe3\xa6\xd7" +
-	"W\x01\xbdf\xa8k\xc2P\xc6=\xd5\x9bw\x0c\xf5\xb6" +
-	"\xb0z\xcfnNM\xe2\xfe\xa3,o\xdb.\x98O\x8d" +
-	"\x0b\xb6\x9a\xae\xc3\xf4J8\xeb4Y\x1c\xdeh\xff\xd4" +
-	"\xe8\x84_\xee\xb8\xa1^\xf6Fd\xf9\xbf\x84\x17\x97!" +
-	".\xee\xa5\x1b\xc9\xd0f~\x8dy\xb0cX\xa8\xcc\x83" +
-	"\xae\xfct\xf8\x17\x00\x00\xff\xff$\xf7\x9ex"
+const schema_c50de5992c3b327a = "x\xda\\\x92\xbfk\x13a\x1c\xc6\x9f\xe7\xfb^\x8d\x91" +
+	"\xa6\xe6\x88\x82C\xb3\x08\x82\x82\x16\xd4I]jQ\xd1" +
+	"\x12J\xbe\xa5\"\x88\x83\x97\xbb7\xcda\xbd\x8b\xf1$" +
+	"V\xc4\xc9\xc1\x7f@\xc4\xad\x83\xbbt\xe8\xe0\xe0\"\xb8" +
+	"99\x89\xbb\x08\x0e\x82\xe8 \xf8\xe3\x957&9\xe8" +
+	"\xf6\xbd\x0f\x0f\xc7\xe7y\xee\xea_\x17\xe5\xe4L.\x80" +
+	"\xce\xcf\xecq\xc3\xda\x93\xef\xefwf\x9fB\x0fQ\xdc" +
+	"\xd6\x97\x17g\xbee\x8f>\xe0\xaaT\x18\x00\xa7\x9b\xdc" +
+	"G\xb0q\x84\x9fA\xb7\xfd\xf3\xf5\x8f_\xcf\xdemA" +
+	"\xf7S\xdc\x83S\xe7\x8e?\xffT{\x8b\x19V\x80F" +
+	"U>6\x0e\x8a\xbfBy\x09\x96\xaf\xda\x15\x1eE\xb6" +
+	"\xe5M\xe3\xd5\xe8\xda\x91!N\xb8\xee Z\xbfm\xb3" +
+	"\xc2,\xc4Q?\xeb\x9f\xbd4~^\xb8\xdb\xb7q\xda" +
+	"Mc@\xeb&\x98w\x8e\x07H \x8c\x96\x01\xbdi" +
+	"\xa8\x1b\xc2&\xffz,@\x98z\xdc3\xd4B\xd8\x94" +
+	"?\x1e\x1b \xbc\xe3q\xdfP\x1f\x0a\x9b\xe6\xb7\xc7\x01" +
+	"\x10nv\x00\xbdo\xa8\x8f\x85.\x89\x8a\xa8e\xa3." +
+	"\x00\xd6 \xac\xe1?[\xc9\x13\xebY\x15\xc2*\xe8\x8a" +
+	"Aj'l\x92\x1bv:\xc5\xc0\xda\x15T\xf2\xc4\xb2" +
+	"^\x0e\x05\xb2\x0eN\xeb\xc9\xb8\xde\xb5\xa5\xa55\x9f\xcf" +
+	"Mb\xdb\xa4\xce\x9a\x00\x08|\xaf\x8b\x87\x01]4\xd4" +
+	"\x96\x90\xe3\xaeWV\x01\xbdl\xa8k\xc2P\xc6M\xf5" +
+	":\xa0mC\xbd!\xac\xdc\xb2\x9bS\x978\xbf\x97\x15" +
+	"-\xdb\x05\x8b\xa9\xf3\x88\xad\xa6\xeb0\xbd\x12\xee\x96\x9a" +
+	"l\x0eo\xb4wjt\xccow\xd4P/x#\xb2" +
+	"\xfcc\xc2\xf3\xcb\x10\x17\xf7\xd2\x8dd`3\xbf\xc7\x1c" +
+	"\xd86\x1c\xa9\xcc\x81\xae\xfcx\xf8\x17\x00\x00\xff\xff\xe6" +
+	"\xe3\x9e\xae"
 
 func init() {
 	schemas.Register(schema_c50de5992c3b327a,
 		0x950cb5d2f3880d77,
-		0xd5e6cfcfcdeafc8e,
+		0xa0cc97fbf4bdf8b1,
 		0xd87e6ef139a4eaa0)
 }
