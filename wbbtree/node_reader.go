@@ -103,7 +103,7 @@ func (n *nodeReader) valueKey() store.Key {
 		return store.NilKey
 	}
 
-	vkb, err := ch.At(1)
+	vkb, err := ch.At(2)
 	if err != nil {
 		n.setError(errors.Wrap(err, "while getting value key bytes"))
 		return store.NilKey
