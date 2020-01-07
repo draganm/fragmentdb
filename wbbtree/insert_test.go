@@ -18,10 +18,17 @@ func TestInsert(t *testing.T) {
 
 		nr, err := wbbtree.Insert(st, store.NilKey, []byte{1, 2, 3}, valueKey)
 		require.NoError(t, err)
+
 		t.Run("it should containe the value", func(t *testing.T) {
 			vk, err := wbbtree.Search(st, nr, []byte{1, 2, 3})
 			require.NoError(t, err)
 			require.Equal(t, valueKey, vk)
+		})
+
+		t.Run("when I delete the element", func(t *testing.T) {
+			nr, err := wbbtree.Delete(st, nr, []byte{1, 2, 3})
+			require.NoError(t, err)
+			require.Equal(t, store.NilKey, nr)
 		})
 	})
 }
