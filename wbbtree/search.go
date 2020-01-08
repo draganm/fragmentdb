@@ -21,7 +21,7 @@ func Search(s fragment.Store, root store.Key, key []byte) (store.Key, error) {
 	cmp := bytes.Compare(key, nr.key())
 
 	if cmp == 0 {
-		return nr.valueKey(), nr.err()
+		return nr.value(), nr.err()
 	}
 
 	return store.NilKey, errors.New("not yet implemented")

@@ -25,6 +25,19 @@ func TestInsert(t *testing.T) {
 			require.Equal(t, valueKey, vk)
 		})
 
+		t.Run("when I replace the value", func(t *testing.T) {
+			newValueKey, err := data.StoreData(st, []byte{2}, 8129, 4)
+			require.NoError(t, err)
+
+			nr, err = wbbtree.Insert(st, nr, []byte{1, 2, 3}, newValueKey)
+			require.NoError(t, err)
+			t.Run("it should replace the value", func(t *testing.T) {
+				vk, err := wbbtree.Search(st, nr, []byte{1, 2, 3})
+				require.NoError(t, err)
+				require.Equal(t, newValueKey, vk)
+			})
+		})
+
 		t.Run("it should have count of 1", func(t *testing.T) {
 			cnt, err := wbbtree.Count(st, nr)
 			require.NoError(t, err)

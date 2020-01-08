@@ -52,7 +52,7 @@ func (n *nodeReader) setError(err error) {
 	}
 }
 
-func (n *nodeReader) leftNodeKey() store.Key {
+func (n *nodeReader) leftChild() store.Key {
 	if n.e != nil {
 		return store.NilKey
 	}
@@ -72,7 +72,7 @@ func (n *nodeReader) leftNodeKey() store.Key {
 	return store.BytesToKey(lnkb)
 }
 
-func (n *nodeReader) rightNodeKey() store.Key {
+func (n *nodeReader) rightChild() store.Key {
 	if n.e != nil {
 		return store.NilKey
 	}
@@ -92,7 +92,7 @@ func (n *nodeReader) rightNodeKey() store.Key {
 	return store.BytesToKey(rnkb)
 }
 
-func (n *nodeReader) valueKey() store.Key {
+func (n *nodeReader) value() store.Key {
 	if n.e != nil {
 		return store.NilKey
 	}

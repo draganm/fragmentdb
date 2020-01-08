@@ -18,7 +18,7 @@ func Delete(s fragment.Store, root store.Key, key []byte) (store.Key, error) {
 	cmp := bytes.Compare(key, nr.key())
 
 	if cmp == 0 {
-		if nr.leftNodeKey() == store.NilKey && nr.rightNodeKey() == store.NilKey {
+		if nr.leftChild() == store.NilKey && nr.rightChild() == store.NilKey {
 			return store.NilKey, nr.err()
 		}
 	}
