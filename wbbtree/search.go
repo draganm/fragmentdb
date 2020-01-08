@@ -24,5 +24,15 @@ func Search(s fragment.Store, root store.Key, key []byte) (store.Key, error) {
 		return nr.value(), nr.err()
 	}
 
-	return store.NilKey, errors.New("not yet implemented")
+	switch cmp {
+	case 0:
+		return nr.value(), nr.err()
+	case -1:
+		return Search(s, nr.leftChild(), key)
+	case 1:
+		return Search(s, nr.rightChild(), key)
+	default:
+		return store.NilKey, errors.New("should never be reached")
+	}
+
 }

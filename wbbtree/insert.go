@@ -21,7 +21,8 @@ func Insert(s fragment.Store, root store.Key, key []byte, value store.Key) (stor
 
 	cmp := bytes.Compare(key, nr.key())
 
-	if cmp == 0 {
+	switch cmp {
+	case 0:
 		return s.Create(func(f fragment.Fragment) error {
 			nm := newNodeModifier(f)
 			nm.setLeftChild(nr.leftChild())
@@ -38,6 +39,64 @@ func Insert(s fragment.Store, root store.Key, key []byte, value store.Key) (stor
 
 			return nm.err()
 		})
+
+	case -1:
+		newLeft, err := Insert(s, nr.leftChild(), key, value)
+		if err != nil {
+			return store.NilKey, err
+		}
+
+		return s.Create(func(f fragment.Fragment) error {
+			nm := newNodeModifier(f)
+			nm.setRightChild(nr.rightChild())
+			nm.setRightCount(nr.rightCount())
+			nm.setKey(nr.key())
+			nm.setValue(nr.value())
+
+			nm.setLeftChild(newLeft)
+			nc, err := Count(s, newLeft)
+			if err != nil {
+				return err
+			}
+
+			nm.setLeftCount(nc + 1)
+
+			if nr.err() != nil {
+				return nr.err()
+			}
+
+			return nm.err()
+		})
+
+	case 1:
+		newRight, err := Insert(s, nr.rightChild(), key, value)
+		if err != nil {
+			return store.NilKey, err
+		}
+
+		return s.Create(func(f fragment.Fragment) error {
+			nm := newNodeModifier(f)
+			nm.setLeftChild(nr.leftChild())
+			nm.setLeftCount(nr.leftCount())
+			nm.setKey(nr.key())
+			nm.setValue(nr.value())
+
+			nm.setRightChild(newRight)
+
+			nc, err := Count(s, newRight)
+			if err != nil {
+				return err
+			}
+
+			nm.setRightCount(nc + 1)
+
+			if nr.err() != nil {
+				return nr.err()
+			}
+
+			return nm.err()
+		})
+
 	}
 
 	return store.NilKey, errors.New("not yet implemented")
