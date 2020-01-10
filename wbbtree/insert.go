@@ -59,7 +59,7 @@ func Insert(s fragment.Store, root store.Key, key []byte, value store.Key) (stor
 				return err
 			}
 
-			nm.setLeftCount(nc + 1)
+			nm.setLeftCount(nc)
 
 			if nr.err() != nil {
 				return nr.err()
@@ -88,7 +88,7 @@ func Insert(s fragment.Store, root store.Key, key []byte, value store.Key) (stor
 				return err
 			}
 
-			nm.setRightCount(nc + 1)
+			nm.setRightCount(nc)
 
 			if nr.err() != nil {
 				return nr.err()
@@ -97,7 +97,8 @@ func Insert(s fragment.Store, root store.Key, key []byte, value store.Key) (stor
 			return nm.err()
 		})
 
+	default:
+		return store.NilKey, errors.New("should never be reached")
 	}
 
-	return store.NilKey, errors.New("not yet implemented")
 }

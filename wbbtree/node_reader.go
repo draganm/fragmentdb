@@ -157,5 +157,5 @@ func (n *nodeReader) rightCount() uint64 {
 		return 0
 	}
 
-	return tn.CountLeft()
+	return tn.CountRight()
 }
