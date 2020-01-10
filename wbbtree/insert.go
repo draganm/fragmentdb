@@ -8,6 +8,15 @@ import (
 )
 
 func Insert(s fragment.Store, root store.Key, key []byte, value store.Key) (store.Key, error) {
+	nr, err := insert(s, root, key, value)
+	if err != nil {
+		return store.NilKey, err
+	}
+
+	return balance(s, nr)
+}
+
+func insert(s fragment.Store, root store.Key, key []byte, value store.Key) (store.Key, error) {
 	if root == store.NilKey {
 		return s.Create(func(f fragment.Fragment) error {
 			nm := newNodeModifier(f)

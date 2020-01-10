@@ -8,21 +8,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-func findSuccessor(s fragment.Store, k store.Key) (store.Key, error) {
-	nr := newNodeReader(s, k)
-	lc := nr.leftChild()
-	if lc == store.NilKey {
-		return k, nr.err()
+func Delete(s fragment.Store, root store.Key, key []byte) (store.Key, error) {
+	nr, err := delete(s, root, key)
+	if err != nil {
+		return store.NilKey, err
 	}
-
-	if nr.err() != nil {
-		return store.NilKey, nr.err()
-	}
-
-	return findSuccessor(s, lc)
+	return balance(s, nr)
 }
 
-func Delete(s fragment.Store, root store.Key, key []byte) (store.Key, error) {
+func delete(s fragment.Store, root store.Key, key []byte) (store.Key, error) {
 	if root == store.NilKey {
 		return store.NilKey, store.ErrNotFound
 	}
@@ -145,4 +139,18 @@ func Delete(s fragment.Store, root store.Key, key []byte) (store.Key, error) {
 		return store.NilKey, errors.New("should never be reached")
 	}
 
+}
+
+func findSuccessor(s fragment.Store, k store.Key) (store.Key, error) {
+	nr := newNodeReader(s, k)
+	lc := nr.leftChild()
+	if lc == store.NilKey {
+		return k, nr.err()
+	}
+
+	if nr.err() != nil {
+		return store.NilKey, nr.err()
+	}
+
+	return findSuccessor(s, lc)
 }

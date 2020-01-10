@@ -75,6 +75,12 @@ func (tt *treeTester) dump() {
 	wbbtree.Dump(tt.st, tt.rk, "")
 }
 
+func (tt *treeTester) ensureBalanced(t *testing.T) {
+	bal, err := wbbtree.IsBalanced(tt.st, tt.rk)
+	require.NoError(t, err)
+	require.True(t, bal)
+}
+
 func TestDelete(t *testing.T) {
 	t.Run("when deleting from a tree with one element", func(t *testing.T) {
 		tt := newTreeTester()
