@@ -70,6 +70,10 @@ func IsBalanced(s fragment.Store, root store.Key) (bool, error) {
 	lcnt := nr.leftCount()
 	rcnt := nr.rightCount()
 
+	if lcnt+rcnt <= 2 {
+		return true, nil
+	}
+
 	if nr.err() != nil {
 		return false, nr.err()
 	}

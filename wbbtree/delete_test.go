@@ -81,6 +81,15 @@ func (tt *treeTester) ensureBalanced(t *testing.T) {
 	require.True(t, bal)
 }
 
+func (tt *treeTester) containsKey(t *testing.T, k []byte) bool {
+	_, err := wbbtree.Search(tt.st, tt.rk, k)
+	if err == wbbtree.ErrNotFound {
+		return false
+	}
+	require.NoError(t, err)
+	return true
+}
+
 func TestDelete(t *testing.T) {
 	t.Run("when deleting from a tree with one element", func(t *testing.T) {
 		tt := newTreeTester()

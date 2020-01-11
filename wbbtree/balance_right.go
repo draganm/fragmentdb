@@ -7,6 +7,7 @@ import (
 )
 
 func singleRight(s fragment.Store, k store.Key) (store.Key, error) {
+
 	nr := newNodeReader(s, k)
 	lcnr := newNodeReader(s, nr.leftChild())
 
@@ -17,8 +18,8 @@ func singleRight(s fragment.Store, k store.Key) (store.Key, error) {
 		nm.setRightChild(nr.rightChild())
 		nm.setRightCount(nr.rightCount())
 
-		nm.setLeftChild(lcnr.leftChild())
-		nm.setLeftCount(lcnr.leftCount())
+		nm.setLeftChild(lcnr.rightChild())
+		nm.setLeftCount(lcnr.rightCount())
 
 		return firstError(nr.err, lcnr.err, nm.err)
 	})
@@ -62,8 +63,8 @@ func doubleRight(s fragment.Store, k store.Key) (store.Key, error) {
 		nm.setRightChild(nr.rightChild())
 		nm.setRightCount(nr.rightCount())
 
-		nm.setLeftChild(lrcnr.leftChild())
-		nm.setLeftCount(lrcnr.leftCount())
+		nm.setLeftChild(lrcnr.rightChild())
+		nm.setLeftCount(lrcnr.rightCount())
 
 		return firstError(nr.err, lcnr.err, lrcnr.err, nm.err)
 	})

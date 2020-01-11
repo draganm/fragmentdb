@@ -7,6 +7,7 @@ import (
 )
 
 func singleLeft(s fragment.Store, k store.Key) (store.Key, error) {
+
 	nr := newNodeReader(s, k)
 	rcnr := newNodeReader(s, nr.rightChild())
 
