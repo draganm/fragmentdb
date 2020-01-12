@@ -11,5 +11,9 @@ func Count(f fragment.Store, root store.Key) (uint64, error) {
 	}
 
 	nr := newNodeReader(f, root)
+	if nr.isEmpty() {
+		return 0, nr.err()
+	}
+
 	return nr.leftCount() + nr.rightCount() + 1, nr.err()
 }

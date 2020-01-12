@@ -8,11 +8,18 @@ import (
 )
 
 func Dump(s fragment.Store, root store.Key, prefix string) {
+
 	if root == store.NilKey {
 		fmt.Println(prefix, "NIL")
 		return
 	}
+
 	nr := newNodeReader(s, root)
+	if nr.isEmpty() {
+		fmt.Println(prefix, "NIL")
+		return
+	}
+
 	fmt.Printf("%sKey: %x  LC: %d RC: %d Value %s\n", prefix, nr.key(), nr.leftCount(), nr.rightCount(), nr.value())
 	Dump(s, nr.leftChild(), prefix+"L:  ")
 	Dump(s, nr.rightChild(), prefix+"R:  ")

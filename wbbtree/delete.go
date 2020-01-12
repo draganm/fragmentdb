@@ -17,11 +17,18 @@ func Delete(s fragment.Store, root store.Key, key []byte) (store.Key, error) {
 }
 
 func delete(s fragment.Store, root store.Key, key []byte) (store.Key, error) {
+
 	if root == store.NilKey {
 		return store.NilKey, store.ErrNotFound
 	}
 
 	nr := newNodeReader(s, root)
+	if nr.isEmpty() {
+		if nr.err() != nil {
+			return store.NilKey, nr.err()
+		}
+		return store.NilKey, store.ErrNotFound
+	}
 
 	cmp := bytes.Compare(key, nr.key())
 

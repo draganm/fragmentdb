@@ -6,11 +6,16 @@ import (
 )
 
 func ForEach(s fragment.Store, root store.Key, f func([]byte, store.Key) error) error {
+
 	if root == store.NilKey {
 		return nil
 	}
 
 	nr := newNodeReader(s, root)
+	if nr.isEmpty() {
+		return nr.err()
+	}
+
 	lc := nr.leftChild()
 	rc := nr.rightChild()
 	k := nr.key()

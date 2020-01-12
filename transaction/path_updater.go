@@ -1,10 +1,10 @@
 package transaction
 
 import (
-	"github.com/pkg/errors"
 	"github.com/draganm/fragmentdb/dbpath"
 	"github.com/draganm/fragmentdb/store"
-	"github.com/draganm/fragmentdb/trie"
+	"github.com/draganm/fragmentdb/wbbtree"
+	"github.com/pkg/errors"
 )
 
 type pathElement struct {
@@ -32,12 +32,12 @@ func (t *Transaction) UpdatePath(path string, value store.Key) error {
 			key:    []byte(p),
 		})
 
-		ck, err = trie.Get(t.store, ck, []byte(p))
+		ck, err = wbbtree.Search(t.store, ck, []byte(p))
 
-		if err == trie.ErrNotFound && i == len(parts)-1 {
+		if err == wbbtree.ErrNotFound && i == len(parts)-1 {
 			ck = store.NilKey
 		} else if err != nil {
-			return errors.Wrapf(err, "while geting child %q of trie", p)
+			return errors.Wrapf(err, "while geting child %q of wbbtree", p)
 		}
 	}
 
@@ -45,14 +45,14 @@ func (t *Transaction) UpdatePath(path string, value store.Key) error {
 		pe := pathElements[i]
 
 		if value == store.NilKey {
-			value, err = trie.Delete(t.store, pe.parent, pe.key)
+			value, err = wbbtree.Delete(t.store, pe.parent, pe.key)
 			if err != nil {
-				return errors.Wrapf(err, "while deleting %q from a trie", string(pe.key))
+				return errors.Wrapf(err, "while deleting %q from a wbbtree", string(pe.key))
 			}
 		} else {
-			value, err = trie.Insert(t.store, pe.parent, pe.key, value)
+			value, err = wbbtree.Insert(t.store, pe.parent, pe.key, value)
 			if err != nil {
-				return errors.Wrapf(err, "while inserting %q into a trie", string(pe.key))
+				return errors.Wrapf(err, "while inserting %q into a wbbtree", string(pe.key))
 			}
 		}
 	}

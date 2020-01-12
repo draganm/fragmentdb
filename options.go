@@ -1,8 +1,8 @@
 package fragmentdb
 
 import (
-	"github.com/pkg/errors"
 	"github.com/draganm/fragmentdb/s3"
+	"github.com/pkg/errors"
 )
 
 func WithS3(endpoint, accessKeyID, secretAccessKey string, secure bool, bucketName, prefix string) func(d *DB) error {

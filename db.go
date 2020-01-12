@@ -11,7 +11,7 @@ import (
 	"github.com/draganm/fragmentdb/s3"
 	"github.com/draganm/fragmentdb/store"
 	"github.com/draganm/fragmentdb/store/badger"
-	"github.com/draganm/fragmentdb/trie"
+	"github.com/draganm/fragmentdb/wbbtree"
 )
 
 const defaultFragSize = 128 * 1024
@@ -24,12 +24,12 @@ func (db *DB) ensureNotEmpty() error {
 	_, err := rwStore.Get(store.NilKey)
 	if errors.Cause(err) == store.ErrNotFound {
 
-		rootTrieKey, err := trie.CreateEmpty(fs)
+		rootKey, err := wbbtree.CreateEmpty(fs)
 		if err != nil {
-			return errors.Wrap(err, "while creating empty root trie")
+			return errors.Wrap(err, "while creating empty root wbbtree")
 		}
 
-		err = rwStore.Put(store.NilKey, rootTrieKey.Bytes())
+		err = rwStore.Put(store.NilKey, rootKey.Bytes())
 		if err != nil {
 			discard()
 			return errors.Wrap(err, "while storing root")

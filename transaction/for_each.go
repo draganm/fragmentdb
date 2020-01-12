@@ -3,7 +3,7 @@ package transaction
 import (
 	"github.com/pkg/errors"
 	"github.com/draganm/fragmentdb/store"
-	"github.com/draganm/fragmentdb/trie"
+	"github.com/draganm/fragmentdb/wbbtree"
 )
 
 var StopIteration = errors.New("stop iteration")
@@ -17,7 +17,7 @@ func (t *ReadTransaction) ForEach(path string, cb func(key string) error) error 
 		return errors.Wrapf(err, "while navigating nested maps %q", path)
 	}
 
-	err = trie.ForEach(t.store, tk, func(key []byte, _ store.Key) error {
+	err = wbbtree.ForEach(t.store, tk, func(key []byte, _ store.Key) error {
 		return cb(string(key))
 	})
 

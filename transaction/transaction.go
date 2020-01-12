@@ -3,12 +3,12 @@ package transaction
 import (
 	"io/ioutil"
 
-	"github.com/pkg/errors"
 	"github.com/draganm/fragmentdb/data"
 	"github.com/draganm/fragmentdb/dbpath"
 	"github.com/draganm/fragmentdb/fragment"
 	"github.com/draganm/fragmentdb/store"
-	"github.com/draganm/fragmentdb/trie"
+	"github.com/draganm/fragmentdb/wbbtree"
+	"github.com/pkg/errors"
 )
 
 func New(
@@ -66,13 +66,13 @@ func (t *ReadTransaction) GetKey(path string) (store.Key, error) {
 	trk := t.newRoot
 
 	for _, pe := range pathElements {
-		trk, err = trie.Get(t.store, trk, []byte(pe))
+		trk, err = wbbtree.Search(t.store, trk, []byte(pe))
 
 		if err != nil {
-			if errors.Cause(err) == trie.ErrNotFound {
+			if errors.Cause(err) == wbbtree.ErrNotFound {
 				return store.NilKey, ErrNotExists
 			}
-			return store.NilKey, errors.Wrap(err, "while getting key from trie")
+			return store.NilKey, errors.Wrap(err, "while getting key from wbbtree")
 		}
 	}
 
@@ -95,9 +95,9 @@ func (t *ReadTransaction) Get(path string) ([]byte, error) {
 }
 
 func (t *Transaction) CreateMap(path string) error {
-	vk, err := trie.CreateEmpty(t.store)
+	vk, err := wbbtree.CreateEmpty(t.store)
 	if err != nil {
-		return errors.Wrap(err, "while creating empty trie")
+		return errors.Wrap(err, "while creating empty wbbtree")
 	}
 
 	return t.UpdatePath(path, vk)

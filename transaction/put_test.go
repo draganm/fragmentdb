@@ -7,14 +7,14 @@ import (
 	"github.com/draganm/fragmentdb/fragment"
 	"github.com/draganm/fragmentdb/store"
 	"github.com/draganm/fragmentdb/transaction"
-	"github.com/draganm/fragmentdb/trie"
+	"github.com/draganm/fragmentdb/wbbtree"
 )
 
 func newTestTransaction(t *testing.T) *transaction.Transaction {
 	storeBackend := store.NewMemoryBackendFactory()
 	txStoreBackend := store.NewMemoryBackendFactory()
 
-	root, err := trie.CreateEmpty(fragment.NewStore(storeBackend))
+	root, err := wbbtree.CreateEmpty(fragment.NewStore(storeBackend))
 	require.NoError(t, err)
 
 	return transaction.New(storeBackend, txStoreBackend, root, 1024, 4, nil, nil)

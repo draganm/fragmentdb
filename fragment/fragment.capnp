@@ -10,8 +10,7 @@ struct Fragment {
     specific :union {
         dataLeaf @1 :Data;
         dataNode @2 :UInt64;
-        trieNode @3 :Data;
-        wbbtreeNode @4 :WBBTreeNode;
+        wbbtreeNode @3 :WBBTreeNode;
     }
 }
 

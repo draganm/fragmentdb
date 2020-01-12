@@ -17,6 +17,12 @@ func Search(s fragment.Store, root store.Key, key []byte) (store.Key, error) {
 	}
 
 	nr := newNodeReader(s, root)
+	if nr.isEmpty() {
+		if nr.err() != nil {
+			return store.NilKey, nr.err()
+		}
+		return store.NilKey, ErrNotFound
+	}
 
 	cmp := bytes.Compare(key, nr.key())
 

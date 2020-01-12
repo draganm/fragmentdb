@@ -1,8 +1,8 @@
 package transaction
 
 import (
-	"github.com/pkg/errors"
 	"github.com/draganm/fragmentdb/fragment"
+	"github.com/pkg/errors"
 )
 
 type Type int
@@ -32,7 +32,7 @@ func (t *Transaction) TypeOf(path string) (Type, error) {
 		return TypeData, nil
 	case fragment.Fragment_specific_Which_dataNode:
 		return TypeData, nil
-	case fragment.Fragment_specific_Which_trieNode:
+	case fragment.Fragment_specific_Which_wbbtreeNode:
 		return TypeMap, nil
 	default:
 		return TypeUnknown, nil

@@ -17,6 +17,7 @@ func Insert(s fragment.Store, root store.Key, key []byte, value store.Key) (stor
 }
 
 func insert(s fragment.Store, root store.Key, key []byte, value store.Key) (store.Key, error) {
+
 	if root == store.NilKey {
 		return s.Create(func(f fragment.Fragment) error {
 			nm := newNodeModifier(f)
@@ -27,6 +28,14 @@ func insert(s fragment.Store, root store.Key, key []byte, value store.Key) (stor
 	}
 
 	nr := newNodeReader(s, root)
+	if nr.isEmpty() {
+		return s.Create(func(f fragment.Fragment) error {
+			nm := newNodeModifier(f)
+			nm.setKey(key)
+			nm.setValue(value)
+			return nm.err()
+		})
+	}
 
 	cmp := bytes.Compare(key, nr.key())
 

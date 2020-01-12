@@ -159,3 +159,11 @@ func (n *nodeReader) rightCount() uint64 {
 
 	return tn.CountRight()
 }
+
+func (n *nodeReader) isEmpty() bool {
+	if n.e != nil {
+		return false
+	}
+
+	return n.value() == store.NilKey && len(n.key()) == 0
+}
